@@ -386,63 +386,125 @@ public class AfterLoginPage extends JFrame {
         mainPanel.repaint();
     }
 
-    private void showBookPopup(String imagePath, String title, String author, String price, String description) {
-        JFrame popupFrame = new JFrame(title);
-        popupFrame.setSize(500, 600);
-        popupFrame.setLocationRelativeTo(null);
-        popupFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    private void showBookPopup(String imagePath, String code, String author, String price, String description) {
 
-        JPanel popupPanel = new JPanel(null);
-        popupPanel.setBackground(Color.WHITE);
+    JFrame popup = new JFrame();
+    popup.setSize(1100, 600);
+    popup.setLocationRelativeTo(null);
+    popup.setUndecorated(true); // remove frame border
+    popup.setLayout(null);
 
-        // Book image
-        ImageIcon bookImg = new ImageIcon(imagePath);
-        Image scaled = bookImg.getImage().getScaledInstance(250, 300, Image.SCALE_SMOOTH);
-        JLabel imgLabel = new JLabel(new ImageIcon(scaled));
-        imgLabel.setBounds(125, 20, 250, 300);
-        popupPanel.add(imgLabel);
+    JPanel bg = new JPanel(null);
+    bg.setBackground(Color.WHITE);
+    bg.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+    bg.setBounds(0, 0, 1100, 600);
 
-        // Title
-        JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        titleLabel.setBounds(20, 330, 460, 30);
-        popupPanel.add(titleLabel);
+    popup.add(bg);
 
-        // Author
-        JLabel authorLabel = new JLabel("Author: " + author);
-        authorLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        authorLabel.setBounds(20, 365, 460, 20);
-        popupPanel.add(authorLabel);
+    // ===== LEFT CONTAINER (gray background) =====
+    JPanel leftPanel = new JPanel(null);
+    leftPanel.setBackground(new Color(240, 240, 240));
+    leftPanel.setBounds(40, 40, 400, 520);
+    leftPanel.setBorder(BorderFactory.createLineBorder(new Color(180, 180, 180), 2));
+    bg.add(leftPanel);
 
-        // Price
-        JLabel priceLabel = new JLabel("Price: " + price);
-        priceLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        priceLabel.setForeground(new Color(0, 128, 0));
-        priceLabel.setBounds(20, 390, 460, 20);
-        popupPanel.add(priceLabel);
+    // Book Image
+    ImageIcon raw = new ImageIcon(imagePath);
+    Image scaled = raw.getImage().getScaledInstance(320, 380, Image.SCALE_SMOOTH);
+    JLabel img = new JLabel(new ImageIcon(scaled));
+    img.setBounds(40, 60, 320, 380);
+    leftPanel.add(img);
 
-        // Description
-        JLabel descLabel = new JLabel("<html>" + description + "</html>");
-        descLabel.setFont(new Font("Arial", Font.PLAIN, 11));
-        descLabel.setBounds(20, 415, 460, 60);
-        popupPanel.add(descLabel);
+    // ===== CLOSE BUTTON (X) =====
+    JLabel close = new JLabel("✕", SwingConstants.CENTER);
+    close.setFont(new Font("Arial", Font.BOLD, 32));
+    close.setForeground(Color.BLACK);
+    close.setBounds(1040, 10, 50, 50);
+    close.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    close.addMouseListener(new MouseAdapter() {
+        @Override public void mouseClicked(MouseEvent e) {
+            popup.dispose();
+        }
+    });
+    bg.add(close);
 
-        // Add to Cart button
-        JButton addToCartBtn = new JButton("Add to Cart");
-        addToCartBtn.setFont(new Font("Arial", Font.BOLD, 14));
-        addToCartBtn.setBounds(150, 490, 200, 40);
-        addToCartBtn.setBackground(Color.BLACK);
-        addToCartBtn.setForeground(Color.WHITE);
-        addToCartBtn.addActionListener(e -> {
-            GlobalCartList.cartItems.add(new CartItem(title, price, imagePath, description));
-            JOptionPane.showMessageDialog(popupFrame, title + " added to cart!");
-            popupFrame.dispose();
-        });
-        popupPanel.add(addToCartBtn);
+    // ===== TITLE =====
+    JLabel titleLabel = new JLabel(code);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
+    titleLabel.setBounds(470, 60, 600, 40);
+    bg.add(titleLabel);
 
-        popupFrame.add(popupPanel);
-        popupFrame.setVisible(true);
-    }
+    // ===== SUBTITLE small uppercase =====
+    JLabel subtitle = new JLabel("A STRUCTURED PROGRAMMING APPROACH IN C 4ᵀᴴ ED");
+    subtitle.setFont(new Font("Arial", Font.PLAIN, 20));
+    subtitle.setBounds(470, 100, 700, 35);
+    bg.add(subtitle);
+
+    // ===== AUTHOR =====
+    JLabel auth = new JLabel("AUTHOR:  " + author.toUpperCase());
+    auth.setFont(new Font("Arial", Font.BOLD, 16));
+    auth.setBounds(470, 140, 700, 30);
+    bg.add(auth);
+
+    // ===== PRICE (big red) =====
+    JLabel priceLabel = new JLabel(price);
+    priceLabel.setFont(new Font("Arial", Font.BOLD, 36));
+    priceLabel.setForeground(new Color(139, 0, 0));
+    priceLabel.setBounds(470, 180, 400, 50);
+    bg.add(priceLabel);
+
+    // ===== ABOUT THIS ITEM =====
+    JLabel about = new JLabel("ABOUT THIS ITEM");
+    about.setFont(new Font("Arial", Font.BOLD, 18));
+    about.setBounds(470, 230, 500, 30);
+    bg.add(about);
+
+    // ===== DESCRIPTION (show first part only) =====
+    String shortDesc = description.length() > 270 ? description.substring(0, 270) + "...SEE MORE" : description;
+
+    JLabel descLabel = new JLabel("<html>" + shortDesc + "</html>");
+    descLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+    descLabel.setBounds(470, 260, 600, 120);
+    bg.add(descLabel);
+
+    // ===== ADD TO CART BUTTON (white border) =====
+    JButton addToCart = new JButton("ADD TO CART");
+    addToCart.setBounds(470, 420, 220, 55);
+    addToCart.setFont(new Font("Arial", Font.BOLD, 18));
+    addToCart.setBackground(Color.WHITE);
+    addToCart.setForeground(Color.BLACK);
+    addToCart.setBorder(new RoundedBorder(50, Color.BLACK, 1));
+    addToCart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+    addToCart.addActionListener(e -> {
+        GlobalCartList.cartItems.add(new CartItem(code, price, imagePath, description));
+        JOptionPane.showMessageDialog(null, code + " added to cart!");
+        popup.dispose();
+    });
+
+    bg.add(addToCart);
+
+    // ===== PURCHASE BUTTON (Dark Blue) =====
+    JButton purchase = new JButton("PURCHASE");
+    purchase.setBounds(710, 420, 220, 55);
+    purchase.setFont(new Font("Arial", Font.BOLD, 18));
+    purchase.setBackground(new Color(10, 40, 110));
+    purchase.setForeground(Color.WHITE);
+    purchase.setBorder(new RoundedBorder(50, new Color(10, 40, 110), 1));
+    purchase.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+    purchase.addActionListener(e -> {
+        ArrayList<CartItem> single = new ArrayList<>();
+        single.add(new CartItem(code, price, imagePath, description));
+        loadCheckout(single);   // direct checkout
+        popup.dispose();
+    });
+
+    bg.add(purchase);
+
+    popup.setVisible(true);
+}
+
 
     public void loadHomePage() {
         if (categoryPanel != null)

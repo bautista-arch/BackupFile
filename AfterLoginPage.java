@@ -2,72 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
 
 public class AfterLoginPage extends JFrame {
-
-    // Top-only border for menu panel
-    static class TopBorder extends AbstractBorder {
-        private final int thickness;
-        private final Color color;
-
-        public TopBorder(int thickness, Color color) {
-            this.thickness = thickness;
-            this.color = color;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            g.setColor(color);
-            g.fillRect(x, y, width, thickness);
-        }
-    }
-
-    // Rounded border for search bar and User button
-    static class RoundedFieldBorder extends AbstractBorder {
-        private final int radius;
-
-        public RoundedFieldBorder(int radius) {
-            this.radius = radius;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(Color.GRAY);
-            g2.setStroke(new BasicStroke(2));
-            g2.drawRoundRect(x + 1, y + 1, w - 3, h - 3, radius, radius);
-            g2.dispose();
-        }
-
-        @Override
-        public Insets getBorderInsets(Component c) {
-            return new Insets(8, 12, 8, 12);
-        }
-    }
-
-    // Rounded border for category blocks
-    static class RoundedBorder extends AbstractBorder {
-        private final int radius;
-        private final Color color;
-        private final int thickness;
-
-        public RoundedBorder(int radius, Color color, int thickness) {
-            this.radius = radius;
-            this.color = color;
-            this.thickness = thickness;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setColor(color);
-            g2.setStroke(new BasicStroke(thickness));
-            g2.drawRoundRect(x + thickness / 2, y + thickness / 2, width - thickness, height - thickness,
-                    radius, radius);
-        }
-    }
 
     private final JPanel mainPanel;
     private JPanel categoryPanel;
@@ -470,7 +406,7 @@ public class AfterLoginPage extends JFrame {
     // ===== ADD TO CART BUTTON (white border) =====
     JButton addToCart = new JButton("ADD TO CART");
     addToCart.setBounds(470, 420, 220, 55);
-    addToCart.setFont(new Font("Arial", Font.BOLD, 18));
+    addToCart.setFont(new Font("Arial", Font.BOLD, 14));
     addToCart.setBackground(Color.WHITE);
     addToCart.setForeground(Color.BLACK);
     addToCart.setBorder(new RoundedBorder(50, Color.BLACK, 1));
@@ -487,7 +423,7 @@ public class AfterLoginPage extends JFrame {
     // ===== PURCHASE BUTTON (Dark Blue) =====
     JButton purchase = new JButton("PURCHASE");
     purchase.setBounds(710, 420, 220, 55);
-    purchase.setFont(new Font("Arial", Font.BOLD, 18));
+    purchase.setFont(new Font("Arial", Font.BOLD, 14));
     purchase.setBackground(new Color(10, 40, 110));
     purchase.setForeground(Color.WHITE);
     purchase.setBorder(new RoundedBorder(50, new Color(10, 40, 110), 1));
@@ -524,16 +460,12 @@ public class AfterLoginPage extends JFrame {
     }
 
     public void loadCheckout(java.util.List<CartItem> items) {
-        if (items.size() == 1) {
-            JFrame checkoutFrame = new JFrame("Checkout");
-            checkoutFrame.setSize(1200, 800);
-            checkoutFrame.setLocationRelativeTo(null);
-            checkoutFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            checkoutFrame.add(new CheckoutPanel(this, items.get(0)));
-            checkoutFrame.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select only one item for checkout.");
-        }
+        JFrame checkoutFrame = new JFrame("Checkout");
+        checkoutFrame.setSize(1200, 800);
+        checkoutFrame.setLocationRelativeTo(null);
+        checkoutFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        checkoutFrame.add(new CheckoutPanel(this, items));
+        checkoutFrame.setVisible(true);
     }
 
     public void showDepartmentMenu(JPanel slotPanel, JLabel menuLabel) {

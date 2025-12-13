@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.border.*;
 
 public class CartPanel extends JPanel {
 
@@ -11,6 +10,8 @@ public class CartPanel extends JPanel {
     private JCheckBox selectAll;
     private JLabel subtotalLabel;
     private JLabel totalLabel;
+    private JPanel itemsPanel;
+    private JScrollPane scroll;
 
     public CartPanel(AfterLoginPage parent) {
         this.parent = parent;
@@ -29,6 +30,7 @@ public class CartPanel extends JPanel {
         JPanel itemsPanel = new JPanel();
         itemsPanel.setLayout(new BoxLayout(itemsPanel, BoxLayout.Y_AXIS));
         itemsPanel.setBackground(Color.WHITE);
+        this.itemsPanel = itemsPanel;
 
         // --- HEADER (Select All + Summary)
         JPanel header = new JPanel(null);
@@ -82,6 +84,7 @@ public class CartPanel extends JPanel {
         scroll.setBounds(50, 120, 1100, 540);
         scroll.setBorder(null);
         add(scroll);
+        this.scroll = scroll;
 
         // --- CHECKOUT BUTTON
         JButton checkoutBtn = new JButton("Check Out");
@@ -159,7 +162,7 @@ public class CartPanel extends JPanel {
 
     remove.addActionListener(e -> {
         GlobalCartList.cartItems.remove(item);
-        parent.loadCartPanel();
+        refreshCart();
     });
 
     box.add(remove);
@@ -183,6 +186,16 @@ public class CartPanel extends JPanel {
 }
 
 
+    private double parsePrice(String priceStr) {
+        try {
+            String cleaned = priceStr.replaceAll("[^0-9.]", "");
+            if (cleaned.isEmpty()) return 0.0;
+            return Double.parseDouble(cleaned);
+        } catch (Exception ex) {
+            return 0.0;
+        }
+    }
+
     private void updateSummary() {
         double subtotal = 0.0;
         for (Map.Entry<CartItem, JCheckBox> e : selectionMap.entrySet()) {
@@ -199,14 +212,63 @@ public class CartPanel extends JPanel {
         selectAll.setSelected(all);
     }
 
-    private double parsePrice(String priceStr) {
-        try {
-            String cleaned = priceStr.replaceAll("[^0-9.]", "");
-            if (cleaned.isEmpty()) return 0.0;
-            return Double.parseDouble(cleaned);
-        } catch (Exception ex) {
-            return 0.0;
+    private void refreshCart() {
+        selectionMap.clear();
+        itemsPanel.removeAll();
+
+        // Rebuild header
+        JPanel header = new JPanel(null);
+        header.setPreferredSize(new Dimension(1100, 40));
+        header.setBackground(Color.WHITE);
+
+        selectAll = new JCheckBox();
+        selectAll.setBounds(10, 8, 24, 24);
+        selectAll.setBackground(Color.WHITE);
+
+        selectAll.addActionListener(e -> {
+            boolean sel = selectAll.isSelected();
+            for (JCheckBox cb : selectionMap.values()) cb.setSelected(sel);
+            updateSummary();
+        });
+
+        JLabel selLabel = new JLabel("Select All");
+        selLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        selLabel.setBounds(35, 8, 100, 24);
+
+        header.add(selectAll);
+        header.add(selLabel);
+
+        subtotalLabel = new JLabel("Subtotal: ₱0.00");
+        subtotalLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        subtotalLabel.setBounds(700, 8, 200, 24);
+        header.add(subtotalLabel);
+
+        totalLabel = new JLabel("Total: ₱0.00");
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        totalLabel.setBounds(860, 8, 200, 24);
+        header.add(totalLabel);
+
+        itemsPanel.add(header);
+
+        // Rebuild items
+        if (GlobalCartList.cartItems.isEmpty()) {
+            JLabel empty = new JLabel("Your cart is empty.");
+            empty.setFont(new Font("Arial", Font.BOLD, 20));
+            empty.setAlignmentX(Component.CENTER_ALIGNMENT);
+            itemsPanel.add(Box.createVerticalStrut(30));
+            itemsPanel.add(empty);
+        } else {
+            for (CartItem item : GlobalCartList.cartItems) {
+                itemsPanel.add(createItemPanel(item));
+                itemsPanel.add(createGradientBar());
+            }
         }
+
+        itemsPanel.revalidate();
+        itemsPanel.repaint();
+        scroll.revalidate();
+        scroll.repaint();
+        updateSummary();
     }
 
     private java.util.List<CartItem> getSelectedItems() {
@@ -215,27 +277,6 @@ public class CartPanel extends JPanel {
             if (e.getValue().isSelected()) list.add(e.getKey());
         }
         return list;
-    }
-
-    // --- Rounded Border Class
-    static class RoundedBorder extends AbstractBorder {
-        private int radius;
-        private Color color;
-        private int thickness;
-
-        RoundedBorder(int r, Color c, int t) {
-            radius = r;
-            color = c;
-            thickness = t;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setColor(color);
-            g2.setStroke(new BasicStroke(thickness));
-            g2.drawRoundRect(x, y, w - 1, h - 1, radius, radius);
-        }
     }
 
     // -----------------------
@@ -267,7 +308,11 @@ public class CartPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (parent != null) {
-                        if (item.equals("Home")) parent.loadHomePage();
+                        if (item.equals("Home")) {
+                            Window window = SwingUtilities.getWindowAncestor(CartPanel.this);
+                            if (window != null) window.dispose();
+                            parent.loadHomePage();
+                        }
                         else if (item.equals("Departments")) parent.showDepartmentMenu(slotPanel, menuLabel);
                         else JOptionPane.showMessageDialog(null, item + " clicked!");
                     }

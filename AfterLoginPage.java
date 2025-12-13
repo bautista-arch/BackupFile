@@ -413,7 +413,7 @@ public class AfterLoginPage extends JFrame {
     addToCart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
     addToCart.addActionListener(e -> {
-        GlobalCartList.cartItems.add(new CartItem(code, price, imagePath, description));
+        GlobalCartList.cartItems.add(new CartItem(description, price, imagePath, description, "", code));
         JOptionPane.showMessageDialog(null, code + " added to cart!");
         popup.dispose();
     });
@@ -431,7 +431,7 @@ public class AfterLoginPage extends JFrame {
 
     purchase.addActionListener(e -> {
         ArrayList<CartItem> single = new ArrayList<>();
-        single.add(new CartItem(code, price, imagePath, description));
+        single.add(new CartItem(description, price, imagePath, description, "", code));
         loadCheckout(single);   // direct checkout
         popup.dispose();
     });
@@ -461,7 +461,7 @@ public class AfterLoginPage extends JFrame {
 
     public void loadCheckout(java.util.List<CartItem> items) {
         JFrame checkoutFrame = new JFrame("Checkout");
-        checkoutFrame.setSize(1200, 800);
+        checkoutFrame.setSize(1200, 700);
         checkoutFrame.setLocationRelativeTo(null);
         checkoutFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         checkoutFrame.add(new CheckoutPanel(this, items));

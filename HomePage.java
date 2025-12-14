@@ -9,6 +9,7 @@ public class HomePage extends JFrame {
         setSize(950, 520);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
         setLayout(new GridLayout(1, 2));
 
         JPanel leftPanel = new JPanel() {

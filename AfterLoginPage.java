@@ -15,6 +15,7 @@ public class AfterLoginPage extends JFrame {
         setSize(1200, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
 
         mainPanel = new JPanel();
         mainPanel.setLayout(null);
@@ -55,7 +56,7 @@ public class AfterLoginPage extends JFrame {
 
         // Cart icon
         JLabel cartIcon = new JLabel(new ImageIcon("c:\\Users\\ASUS\\Documents\\ImageFile\\cart.png"));
-        cartIcon.setBounds(850, 15, 40, 40);
+        cartIcon.setBounds(900, 15, 40, 40);
         cartIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         topNav.add(cartIcon);
         cartIcon.addMouseListener(new MouseAdapter() {
@@ -67,11 +68,12 @@ public class AfterLoginPage extends JFrame {
 
         // User Button
         JButton userButton = new JButton("User");
-        userButton.setBounds(900, 20, 120, 32);
+        userButton.setBounds(1000, 20, 120, 32);
         userButton.setFont(new Font("Arial", Font.BOLD, 14));
         userButton.setBackground(Color.WHITE);
         userButton.setOpaque(false);
         userButton.setBorder(new RoundedFieldBorder(20));
+        userButton.addActionListener(e -> loadUserProfilePanel());
         topNav.add(userButton);
 
         mainPanel.add(topNav);
@@ -192,6 +194,12 @@ public class AfterLoginPage extends JFrame {
                         }
                         int x = (slotPanel.getWidth() - deptMenu.getPreferredSize().width) / 2;
                         deptMenu.show(menuLabel, x, slotPanel.getHeight());
+                    } else if (item.equals("Recently Added")) {
+                        createBanner("RECENTLY ADDED", "Check out the newest additions");
+                        createRecentlyAddedPanel();
+                    } else if (item.equals("New Arrivals")) {
+                        createBanner("NEW ARRIVALS", "Discover the latest textbooks");
+                        createNewArrivalsPanel();
                     } else {
                         JOptionPane.showMessageDialog(null, item + " clicked!");
                     }
@@ -322,11 +330,155 @@ public class AfterLoginPage extends JFrame {
         mainPanel.repaint();
     }
 
+    private void createRecentlyAddedPanel() {
+        if (categoryPanel != null)
+            mainPanel.remove(categoryPanel);
+
+        categoryPanel = new JPanel(null);
+        categoryPanel.setBackground(new Color(233, 236, 239));
+        categoryPanel.setBounds(50, 420, 1100, 320);
+        categoryPanel.setBorder(new RoundedBorder(30, Color.GRAY, 2));
+
+        JLabel title = new JLabel("RECENTLY ADDED", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setForeground(new Color(20, 40, 100));
+        title.setBounds(10, 10, 1100, 40);
+        categoryPanel.add(title);
+
+        JLabel subtitle = new JLabel("Freshly added textbooks to explore", SwingConstants.CENTER);
+        subtitle.setFont(new Font("Arial", Font.PLAIN, 18));
+        subtitle.setBounds(0, 45, 1100, 30);
+        categoryPanel.add(subtitle);
+
+        // Arrays for recently added (using CBA data as example)
+        String[] images = {
+                "c:\\Users\\ASUS\\Downloads\\1_20251207_204022_0000.png",
+                "c:\\Users\\ASUS\\Downloads\\2_20251207_204022_0001.png",
+                "c:\\Users\\ASUS\\Downloads\\3_20251207_204022_0002.png",
+                "c:\\Users\\ASUS\\Downloads\\4_20251207_204022_0003.png"
+        };
+        String[] titles = {"CBA-FOUND01","CBA-MARK02","CBA-LAW03","CBA-ACC04"};
+        String[] authors = {"Author A","Author B","Author C","Author D"};
+        String[] prices = {"₱3500.00","₱4200.00","₱3800.00","₱4500.00"};
+        String[] descriptions = {
+                "Intro to Business fundamentals...",
+                "Marketing Management text...",
+                "Business Law overview...",
+                "Accounting & Finance guide..."
+        };
+
+        // Preload images dynamically based on array length
+        ImageIcon[] cachedImages = new ImageIcon[images.length];
+        for (int i = 0; i < images.length; i++) {
+            ImageIcon raw = new ImageIcon(images[i]);
+            Image scaled = raw.getImage().getScaledInstance(200, 180, Image.SCALE_SMOOTH);
+            cachedImages[i] = new ImageIcon(scaled);
+        }
+
+        // Create clickable image blocks dynamically
+        for (int i = 0; i < images.length; i++) {
+            String t = titles[i], a = authors[i], p = prices[i], d = descriptions[i];
+            String imgPath = images[i];
+            JPanel block = new JPanel(new BorderLayout());
+            block.setBackground(Color.WHITE);
+            block.setBounds(70 + (i * 250), 100, 200, 180);
+            block.setBorder(new RoundedBorder(20, Color.GRAY, 2));
+
+            JLabel imgLabel = new JLabel(cachedImages[i]);
+            imgLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            imgLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    showBookPopup(imgPath, t, a, p, d);
+                }
+            });
+
+            block.add(imgLabel);
+            categoryPanel.add(block);
+        }
+
+        mainPanel.add(categoryPanel);
+        mainPanel.repaint();
+    }
+
+    private void createNewArrivalsPanel() {
+        if (categoryPanel != null)
+            mainPanel.remove(categoryPanel);
+
+        categoryPanel = new JPanel(null);
+        categoryPanel.setBackground(new Color(233, 236, 239));
+        categoryPanel.setBounds(50, 420, 1100, 320);
+        categoryPanel.setBorder(new RoundedBorder(30, Color.GRAY, 2));
+
+        JLabel title = new JLabel("NEW ARRIVALS", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setForeground(new Color(20, 40, 100));
+        title.setBounds(10, 10, 1100, 40);
+        categoryPanel.add(title);
+
+        JLabel subtitle = new JLabel("Latest textbooks added to our collection", SwingConstants.CENTER);
+        subtitle.setFont(new Font("Arial", Font.PLAIN, 18));
+        subtitle.setBounds(0, 45, 1100, 30);
+        categoryPanel.add(subtitle);
+
+        // Arrays for new arrivals
+        String[] images = {
+                "c:\\Users\\ASUS\\Documents\\ImageFile\\1_20251207_015751_0000.png",
+                "c:\\Users\\ASUS\\Documents\\ImageFile\\2_20251207_015751_0001.png",
+                "c:\\Users\\ASUS\\Documents\\ImageFile\\3_20251207_015751_0002.png",
+                "c:\\Users\\ASUS\\Documents\\ImageFile\\4_20251207_015752_0003.png"
+        };
+        String[] titles = {"CC-COMPROG11","CC-COMRPOG12/IT-OOPROG21","IT-SAD21","CCS-DS04"};
+        String[] authors = {
+                "Hassan Afyouni, Ed.D.","Author Java","System Author","Data Author"};
+        String[] prices = {"₱5000.00","₱5000.00","₱5000.00","₱4500.00"};
+        String[] descriptions = {
+                "A Structured Programming Approach in C...",
+                "Java Programming 8th Ed...",
+                "Systems Analysis & Design...",
+                "Data Structures Overview..."
+        };
+
+        // Preload images dynamically based on array length
+        ImageIcon[] cachedImages = new ImageIcon[images.length];
+        for (int i = 0; i < images.length; i++) {
+            ImageIcon raw = new ImageIcon(images[i]);
+            Image scaled = raw.getImage().getScaledInstance(200, 180, Image.SCALE_SMOOTH);
+            cachedImages[i] = new ImageIcon(scaled);
+        }
+
+        // Create clickable image blocks dynamically
+        for (int i = 0; i < images.length; i++) {
+            String t = titles[i], a = authors[i], p = prices[i], d = descriptions[i];
+            String imgPath = images[i];
+            JPanel block = new JPanel(new BorderLayout());
+            block.setBackground(Color.WHITE);
+            block.setBounds(70 + (i * 250), 100, 200, 180);
+            block.setBorder(new RoundedBorder(20, Color.GRAY, 2));
+
+            JLabel imgLabel = new JLabel(cachedImages[i]);
+            imgLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            imgLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    showBookPopup(imgPath, t, a, p, d);
+                }
+            });
+
+            block.add(imgLabel);
+            categoryPanel.add(block);
+        }
+
+        mainPanel.add(categoryPanel);
+        mainPanel.repaint();
+    }
+
     private void showBookPopup(String imagePath, String code, String author, String price, String description) {
 
     JFrame popup = new JFrame();
     popup.setSize(1100, 600);
     popup.setLocationRelativeTo(null);
+    popup.setResizable(false);
     popup.setUndecorated(true); // remove frame border
     popup.setLayout(null);
 
@@ -454,6 +606,7 @@ public class AfterLoginPage extends JFrame {
         JFrame cartFrame = new JFrame("Shopping Cart");
         cartFrame.setSize(1200, 800);
         cartFrame.setLocationRelativeTo(null);
+        cartFrame.setResizable(false);
         cartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         cartFrame.add(new CartPanel(this));
         cartFrame.setVisible(true);
@@ -463,9 +616,20 @@ public class AfterLoginPage extends JFrame {
         JFrame checkoutFrame = new JFrame("Checkout");
         checkoutFrame.setSize(1200, 700);
         checkoutFrame.setLocationRelativeTo(null);
+        checkoutFrame.setResizable(false);
         checkoutFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         checkoutFrame.add(new CheckoutPanel(this, items));
         checkoutFrame.setVisible(true);
+    }
+
+    public void loadUserProfilePanel() {
+        JFrame userFrame = new JFrame("User Profile");
+        userFrame.setSize(1200, 700);
+        userFrame.setLocationRelativeTo(null);
+        userFrame.setResizable(false);
+        userFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        userFrame.add(new UserProfilePanel(this));
+        userFrame.setVisible(true);
     }
 
     public void showDepartmentMenu(JPanel slotPanel, JLabel menuLabel) {

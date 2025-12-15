@@ -31,7 +31,7 @@ public class ReceiptWindow extends JFrame {
         // OUTER RECEIPT PANEL
         JPanel outer = new JPanel(null);
         outer.setBackground(Color.WHITE);
-        outer.setBounds(50, 50, 1100, 600);  // centered content like banner/menu
+        outer.setBounds(50, 50, 1100, 600);
         outer.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
         mainPanel.add(outer);
 
@@ -138,7 +138,6 @@ public class ReceiptWindow extends JFrame {
         total += parsePrice(item.price);
     }
 
-    // Create image
     int width = 800;
     int height = 600;
     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

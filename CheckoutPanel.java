@@ -10,11 +10,11 @@ import java.io.*;
 public class CheckoutPanel extends JPanel {
 
     private static int receiptCounter = 1;
+    private static int queueCounter = 1;
     private AfterLoginPage parent;
     private java.util.List<CartItem> items;
     private JPanel menuPanel;
 
-    // Rounded border for buttons
     static class RoundedBorder extends javax.swing.border.AbstractBorder {
         private final int radius;
         private final Color color;
@@ -51,34 +51,28 @@ public class CheckoutPanel extends JPanel {
 
         createMenuPanel();
 
-        // CHECKOUT title
         JLabel checkoutTitle = new JLabel("CHECKOUT");
         checkoutTitle.setFont(new Font("Arial", Font.BOLD, 32));
         checkoutTitle.setBounds(50, 70, 300, 50);
         add(checkoutTitle);
 
-        // Separator
         JSeparator sep1 = new JSeparator();
         sep1.setBounds(50, 125, 1100, 2);
         add(sep1);
 
-        // Display items
         int yPos = 150;
         for (CartItem item : items) {
-            // Item image
             ImageIcon raw = new ImageIcon(item.imagePath);
             Image scaled = raw.getImage().getScaledInstance(80, 100, Image.SCALE_SMOOTH);
             JLabel itemImg = new JLabel(new ImageIcon(scaled));
             itemImg.setBounds(50, yPos, 80, 100);
             add(itemImg);
 
-            // Item title
             JLabel itemTitle = new JLabel(item.title);
             itemTitle.setFont(new Font("Arial", Font.BOLD, 18));
             itemTitle.setBounds(150, yPos, 600, 30);
             add(itemTitle);
 
-            // Item description
             JLabel itemDesc = new JLabel(
                 item.description != null && !item.description.isEmpty()
                     ? item.description
@@ -89,33 +83,27 @@ public class CheckoutPanel extends JPanel {
             itemDesc.setBounds(150, yPos + 35, 600, 20);
             add(itemDesc);
 
-            // Item price
             JLabel itemPrice = new JLabel(item.price);
             itemPrice.setFont(new Font("Arial", Font.BOLD, 20));
             itemPrice.setForeground(new Color(150, 0, 0));
             itemPrice.setBounds(150, yPos + 60, 200, 30);
             add(itemPrice);
 
-            yPos += 120; // Space for next item
+            yPos += 120;
         }
 
-        // Separator after items
         JSeparator sep2 = new JSeparator();
         sep2.setBounds(50, yPos + 20, 1100, 2);
         add(sep2);
 
         addPaymentMethods(yPos + 30);
 
-        // Separator
         JSeparator sep3 = new JSeparator();
         sep3.setBounds(50, yPos + 180, 1100, 2);
         add(sep3);
 
         addPaymentDetails(yPos + 200);
     }
-
-    /* ================= PAYMENT METHODS ================= */
-
     private void addPaymentMethods(int yPos) {
         JLabel paymentLabel = new JLabel("PAYMENT METHODS");
         paymentLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -171,8 +159,6 @@ public class CheckoutPanel extends JPanel {
         });
     }
 
-    /* ================= PAYMENT DETAILS ================= */
-
     private void addPaymentDetails(int yPos) {
         JLabel paymentDetailsLabel = new JLabel("PAYMENT DETAILS");
         paymentDetailsLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -205,19 +191,16 @@ public class CheckoutPanel extends JPanel {
     private String calculateTotalPrice() {
         double total = 0.0;
         for (CartItem item : items) {
-            // Assuming price is like "₱100.00"
             String priceStr = item.price.replace("₱", "").trim();
             try {
                 total += Double.parseDouble(priceStr);
             } catch (NumberFormatException e) {
-                // Handle parsing error, maybe log or skip
             }
         }
         return String.format("₱%.2f", total);
     }
 
     private void showReceipt() {
-        // Clear all components except menuPanel
         Component[] components = getComponents();
         for (Component c : components) {
             if (c != menuPanel) {
@@ -225,7 +208,6 @@ public class CheckoutPanel extends JPanel {
             }
         }
 
-        // Complete purchase
         LocalDate today = LocalDate.now();
         for (CartItem item : items) {
             GlobalTransactionHistory.transactions.add(
@@ -234,15 +216,13 @@ public class CheckoutPanel extends JPanel {
             GlobalCartList.cartItems.remove(item);
         }
 
-        // Add receipt content
-        addReceiptContent(receiptCounter++);
+        addReceiptContent(receiptCounter++, queueCounter++);
 
         revalidate();
         repaint();
     }
 
     private void showOnlineReceipt() {
-        // Clear all components except menuPanel
         Component[] components = getComponents();
         for (Component c : components) {
             if (c != menuPanel) {
@@ -250,7 +230,6 @@ public class CheckoutPanel extends JPanel {
             }
         }
 
-        // Complete purchase
         LocalDate today = LocalDate.now();
         for (CartItem item : items) {
             GlobalTransactionHistory.transactions.add(
@@ -259,14 +238,13 @@ public class CheckoutPanel extends JPanel {
             GlobalCartList.cartItems.remove(item);
         }
 
-        // Add receipt content
         addOnlineReceiptContent(receiptCounter++);
 
         revalidate();
         repaint();
     }
 
-    private void addReceiptContent(int receiptNumber) {
+    private void addReceiptContent(int receiptNumber, int queueNumber) {
         JPanel outer = new JPanel(null);
         outer.setBackground(Color.WHITE);
         outer.setPreferredSize(new Dimension(1000, 680));
@@ -294,7 +272,6 @@ public class CheckoutPanel extends JPanel {
         header.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         outer.add(header);
 
-        // UC logo placeholder (left)
         JLabel logo = new JLabel("UC", SwingConstants.CENTER);
         logo.setFont(new Font("Arial", Font.BOLD, 36));
         logo.setForeground(new Color(10,40,90));
@@ -302,7 +279,6 @@ public class CheckoutPanel extends JPanel {
         logo.setBorder(BorderFactory.createLineBorder(new Color(170,170,170)));
         header.add(logo);
 
-        // University info
         JLabel uni = new JLabel("UNIVERSITY OF CEBU - MAIN CAMPUS");
         uni.setFont(new Font("Arial", Font.BOLD, 18));
         uni.setBounds(120, 16, 540, 26);
@@ -318,44 +294,53 @@ public class CheckoutPanel extends JPanel {
         tel.setBounds(120, 58, 300, 16);
         header.add(tel);
 
-        // Semester box (right)
         JTextField semField = new JTextField("1ST SEMESTER S.Y. 2025-2026");
         semField.setEditable(false);
         semField.setHorizontalAlignment(JTextField.CENTER);
         semField.setBounds(650, 18, 240, 26);
         header.add(semField);
 
-        // Receipt No. (cash)
         JTextField receiptField = new JTextField(String.valueOf(receiptNumber));
         receiptField.setEditable(false);
         receiptField.setHorizontalAlignment(JTextField.CENTER);
         receiptField.setBounds(650, 58, 240, 26);
         header.add(receiptField);
 
-        // Payment method label
+        JLabel bigQueue = new JLabel("QUEUE NUMBER: " + queueNumber, SwingConstants.CENTER);
+        bigQueue.setFont(new Font("Arial", Font.BOLD, 24));
+        bigQueue.setBounds(20, 130, 960, 40);
+        outer.add(bigQueue);
+
         JLabel paymentMethod = new JLabel("PAYMENT METHOD: CASH PAYMENT");
         paymentMethod.setFont(new Font("Arial", Font.BOLD, 14));
-        paymentMethod.setBounds(20, 125, 300, 20);
+        paymentMethod.setBounds(20, 190, 300, 20);
         outer.add(paymentMethod);
 
-        // Student name row (below header)
+        JLabel queueLabel = new JLabel("QUEUE NUMBER:");
+        queueLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        queueLabel.setBounds(20, 225, 120, 20);
+        outer.add(queueLabel);
+
+        JTextField queueField = new JTextField(String.valueOf(queueNumber));
+        queueField.setEditable(false);
+        queueField.setBounds(140, 225, 100, 20);
+        outer.add(queueField);
+
         JTextField studentField = new JTextField("FIRST NAME, M.I., LAST NAME");
         studentField.setEditable(true);
-        studentField.setBounds(20, 150, 620, 28);
+        studentField.setBounds(20, 255, 620, 28);
         outer.add(studentField);
         studentField.requestFocus();
         studentField.selectAll();
 
         JTextField courseField = new JTextField("BSIT");
         courseField.setEditable(false);
-        courseField.setBounds(660, 130, 180, 28);
+        courseField.setBounds(660, 255, 180, 28);
         outer.add(courseField);
 
-        // Table area
         JPanel content = new JPanel(null);
         content.setBackground(Color.WHITE);
 
-        // Column labels
         JLabel colNo = new JLabel("NO.");
         colNo.setFont(new Font("Arial", Font.BOLD, 13));
         colNo.setBounds(20, 10, 40, 20);
@@ -381,7 +366,6 @@ public class CheckoutPanel extends JPanel {
         colPrice.setBounds(690, 10, 120, 20);
         content.add(colPrice);
 
-        // Add items
         int y = 40;
         double subtotal = 0.0;
         int itemNo = 1;
@@ -410,13 +394,11 @@ public class CheckoutPanel extends JPanel {
             subtotal += parsePrice(it.price);
             y += 28;
             itemNo++;
-            // draw thin line
             JSeparator s = new JSeparator();
             s.setBounds(10, y - 8, 950, 1);
             content.add(s);
         }
 
-        // Subtotal and total area (below items)
         JLabel lblSubtotal = new JLabel("ITEM SUBTOTAL");
         lblSubtotal.setFont(new Font("Arial", Font.PLAIN, 13));
         lblSubtotal.setBounds(20, y + 10, 200, 30);
@@ -446,7 +428,6 @@ public class CheckoutPanel extends JPanel {
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(220,220,220)));
         outer.add(scrollPane);
 
-        // Done button
         JButton done = new JButton("DONE");
         done.setBounds(540, 625, 120, 36);
         done.addActionListener(e -> {
@@ -458,13 +439,11 @@ public class CheckoutPanel extends JPanel {
         });
         outer.add(done);
 
-        // Download button
         JButton download = new JButton("DOWNLOAD RECEIPT");
         download.setBounds(680, 625, 150, 36);
         download.addActionListener(e -> downloadReceipt(studentField.getText(), courseField.getText(), items));
         outer.add(download);
 
-        // Message label
         JLabel downloadMsg = new JLabel("You can download the receipt here for better quality");
         downloadMsg.setFont(new Font("Arial", Font.PLAIN, 12));
         downloadMsg.setForeground(Color.GRAY);
@@ -540,21 +519,17 @@ public class CheckoutPanel extends JPanel {
     }
 
     private void addOnlineReceiptContent(int receiptNumber) {
-        // Similar to addReceiptContent but with "PAYMENT METHOD: ONLINE PAYMENT"
-        // Copy the entire addReceiptContent and add the label
-        // Outer white panel with margin, centered and smaller
         JPanel outer = new JPanel(null);
         outer.setBackground(Color.WHITE);
-        outer.setPreferredSize(new Dimension(1000, 680)); // Set preferred size for scrolling
+        outer.setPreferredSize(new Dimension(1000, 680));
         outer.setBorder(BorderFactory.createLineBorder(new Color(200,200,200)));
 
         JScrollPane receiptScroll = new JScrollPane(outer);
-        receiptScroll.setBounds(100, 100, 1000, 500); // Adjust height for scroll bar
+        receiptScroll.setBounds(100, 100, 1000, 500);
         receiptScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         receiptScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(receiptScroll);
 
-        // Header area with light-blue gradient panel
         JPanel header = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -571,7 +546,6 @@ public class CheckoutPanel extends JPanel {
         header.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         outer.add(header);
 
-        // UC logo placeholder (left)
         JLabel logo = new JLabel("UC", SwingConstants.CENTER);
         logo.setFont(new Font("Arial", Font.BOLD, 36));
         logo.setForeground(new Color(10,40,90));
@@ -579,7 +553,6 @@ public class CheckoutPanel extends JPanel {
         logo.setBorder(BorderFactory.createLineBorder(new Color(170,170,170)));
         header.add(logo);
 
-        // University info
         JLabel uni = new JLabel("UNIVERSITY OF CEBU - MAIN CAMPUS");
         uni.setFont(new Font("Arial", Font.BOLD, 18));
         uni.setBounds(120, 16, 540, 26);
@@ -595,27 +568,23 @@ public class CheckoutPanel extends JPanel {
         tel.setBounds(120, 58, 300, 16);
         header.add(tel);
 
-        // Semester box (right)
         JTextField semField = new JTextField("1ST SEMESTER S.Y. 2025-2026");
         semField.setEditable(false);
         semField.setHorizontalAlignment(JTextField.CENTER);
         semField.setBounds(650, 18, 240, 26);
         header.add(semField);
 
-        // Receipt No. (online)
         JTextField receiptField = new JTextField(String.valueOf(receiptNumber));
         receiptField.setEditable(false);
         receiptField.setHorizontalAlignment(JTextField.CENTER);
         receiptField.setBounds(650, 58, 240, 26);
         header.add(receiptField);
 
-        // Payment method label
         JLabel paymentMethod = new JLabel("PAYMENT METHOD: ONLINE PAYMENT");
         paymentMethod.setFont(new Font("Arial", Font.BOLD, 14));
         paymentMethod.setBounds(20, 125, 300, 20);
         outer.add(paymentMethod);
 
-        // Transaction ID label
         JLabel transactionLabel = new JLabel("TRANSACTION ID:");
         transactionLabel.setFont(new Font("Arial", Font.BOLD, 12));
         transactionLabel.setBounds(350, 125, 120, 20);
@@ -626,7 +595,6 @@ public class CheckoutPanel extends JPanel {
         transactionField.setBounds(470, 125, 200, 20);
         outer.add(transactionField);
 
-        // Payment Date label
         JLabel dateLabel = new JLabel("PAYMENT DATE:");
         dateLabel.setFont(new Font("Arial", Font.BOLD, 12));
         dateLabel.setBounds(700, 125, 120, 20);
@@ -637,7 +605,6 @@ public class CheckoutPanel extends JPanel {
         dateField.setBounds(820, 125, 120, 20);
         outer.add(dateField);
 
-        // Student name row (below header)
         JTextField studentField = new JTextField("FIRST NAME, M.I., LAST NAME");
         studentField.setEditable(true);
         studentField.setBounds(20, 150, 620, 28);
@@ -650,11 +617,9 @@ public class CheckoutPanel extends JPanel {
         courseField.setBounds(660, 150, 180, 28);
         outer.add(courseField);
 
-        // Table area
         JPanel content = new JPanel(null);
         content.setBackground(Color.WHITE);
 
-        // Column labels
         JLabel colNo = new JLabel("NO.");
         colNo.setFont(new Font("Arial", Font.BOLD, 13));
         colNo.setBounds(20, 10, 40, 20);
@@ -680,7 +645,6 @@ public class CheckoutPanel extends JPanel {
         colPrice.setBounds(690, 10, 120, 20);
         content.add(colPrice);
 
-        // Add items
         int y = 40;
         double subtotal = 0.0;
         int itemNo = 1;
@@ -709,13 +673,12 @@ public class CheckoutPanel extends JPanel {
             subtotal += parsePrice(it.price);
             y += 28;
             itemNo++;
-            // draw thin line
+
             JSeparator s = new JSeparator();
             s.setBounds(10, y - 8, 940, 1);
             content.add(s);
         }
 
-        // Subtotal and total area (below items)
         JLabel lblSubtotal = new JLabel("ITEM SUBTOTAL");
         lblSubtotal.setFont(new Font("Arial", Font.PLAIN, 13));
         lblSubtotal.setBounds(20, y + 10, 200, 30);
@@ -745,7 +708,6 @@ public class CheckoutPanel extends JPanel {
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(220,220,220)));
         outer.add(scrollPane);
 
-        // Done button
         JButton done = new JButton("DONE");
         done.setBounds(540, 625, 120, 36);
         done.addActionListener(e -> {
@@ -757,13 +719,11 @@ public class CheckoutPanel extends JPanel {
         });
         outer.add(done);
 
-        // Download button
         JButton download = new JButton("DOWNLOAD RECEIPT");
         download.setBounds(680, 625, 150, 36);
         download.addActionListener(e -> downloadReceipt(studentField.getText(), courseField.getText(), items));
         outer.add(download);
 
-        // Message label
         JLabel downloadMsg = new JLabel("You can download the receipt here for better quality");
         downloadMsg.setFont(new Font("Arial", Font.PLAIN, 12));
         downloadMsg.setForeground(Color.GRAY);
@@ -780,7 +740,7 @@ public class CheckoutPanel extends JPanel {
         for (CartItem item : items) {
             subtotal += parsePrice(item.price);
         }
-        // Create image
+
         int width = 800;
         int height = 600;
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

@@ -16,6 +16,7 @@ public class UcTextBook {
             setSize(950, 520);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLocationRelativeTo(null);
+            setResizable(false);
             setLayout(new GridLayout(1, 2));
 
             JPanel leftPanel = new JPanel() {
@@ -80,6 +81,7 @@ public class UcTextBook {
             setSize(900, 500);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLocationRelativeTo(null);
+            setResizable(false);
             setLayout(new BorderLayout());
 
             JPanel leftPanel = new JPanel() {
@@ -210,6 +212,7 @@ public class UcTextBook {
             setTitle("Create Account");
             setSize(900, 500);
             setLocationRelativeTo(null);
+            setResizable(false);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLayout(new BorderLayout());
 
@@ -327,6 +330,7 @@ public class UcTextBook {
             setTitle("Change Password");
             setSize(900, 500);
             setLocationRelativeTo(null);
+            setResizable(false);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLayout(new BorderLayout());
 
@@ -436,4 +440,4 @@ public class UcTextBook {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new HomePage());
     }
-                                        }
+}

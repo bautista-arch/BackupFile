@@ -40,12 +40,10 @@ public class AfterLoginPage extends JFrame {
         topNav.setBackground(Color.WHITE);
         topNav.setBounds(0, 0, 1200, 70);
 
-        // UC Logo
         JLabel ucLogo = new JLabel(new ImageIcon("c:\\Users\\ASUS\\Documents\\ImageFile\\UcSmallLogo.png"));
         ucLogo.setBounds(20, 10, 60, 50);
         topNav.add(ucLogo);
 
-        // Search bar
         JTextField searchBar = new JTextField("Search bar");
         searchBar.setBounds(120, 20, 700, 32);
         searchBar.setHorizontalAlignment(JTextField.CENTER);
@@ -54,7 +52,6 @@ public class AfterLoginPage extends JFrame {
         searchBar.setBorder(new RoundedFieldBorder(20));
         topNav.add(searchBar);
 
-        // Cart icon
         JLabel cartIcon = new JLabel(new ImageIcon("c:\\Users\\ASUS\\Documents\\ImageFile\\cart.png"));
         cartIcon.setBounds(900, 15, 40, 40);
         cartIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -66,7 +63,6 @@ public class AfterLoginPage extends JFrame {
             }
         });
 
-        // User Button
         JButton userButton = new JButton("User");
         userButton.setBounds(1000, 20, 120, 32);
         userButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -84,23 +80,22 @@ public class AfterLoginPage extends JFrame {
             mainPanel.remove(banner);
 
         String[] bannerPaths = {
-                "c:\\Users\\ASUS\\Documents\\Banner1.png",
-                "c:\\Users\\ASUS\\Documents\\Banner2.png",
-                "c:\\Users\\ASUS\\Documents\\Banner3.png"
+                "c:\\Users\\ASUS\\Downloads\\IMG_20251214_105307.png",
+                "c:\\Users\\ASUS\\Downloads\\okie.png",
         };
 
         ArrayList<ImageIcon> imageList = new ArrayList<>();
         for (String path : bannerPaths) {
             ImageIcon raw = new ImageIcon(path);
-            Image scaled = raw.getImage().getScaledInstance(1100, 220, Image.SCALE_SMOOTH);
+            Image scaled = raw.getImage().getScaledInstance(1100, 300, Image.SCALE_SMOOTH);
             imageList.add(new ImageIcon(scaled));
         }
 
         JLabel imageLabel = new JLabel(imageList.get(0));
-        imageLabel.setBounds(0, 0, 1100, 220);
+        imageLabel.setBounds(0, 0, 1100, 300);
 
         banner = new JPanel(null);
-        banner.setBounds(40, 100, 1100, 220);
+        banner.setBounds(40, 100, 1100, 300);
         banner.setOpaque(false);
         banner.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         banner.add(imageLabel);
@@ -152,7 +147,7 @@ public class AfterLoginPage extends JFrame {
     private void createMenuPanel() {
         JPanel menuPanel = new JPanel(null);
         menuPanel.setBackground(Color.BLACK);
-        menuPanel.setBounds(50, 340, 1100, 60);
+        menuPanel.setBounds(50, 420, 1100, 60);
         menuPanel.setBorder(new TopBorder(4, Color.BLACK));
 
         String[] menuItems = {"Home", "Departments", "Recently Added", "New Arrivals"};
@@ -219,7 +214,7 @@ public class AfterLoginPage extends JFrame {
 
         categoryPanel = new JPanel(null);
         categoryPanel.setBackground(new Color(233, 236, 239));
-        categoryPanel.setBounds(50, 420, 1100, 320);
+        categoryPanel.setBounds(50, 500, 1100, 490);
         categoryPanel.setBorder(new RoundedBorder(30, Color.GRAY, 2));
 
         JLabel title = new JLabel(department, SwingConstants.CENTER);
@@ -233,7 +228,6 @@ public class AfterLoginPage extends JFrame {
         subtitle.setBounds(0, 45, 1100, 30);
         categoryPanel.add(subtitle);
 
-        // Arrays for department info
         String[] images;
         String[] titles;
         String[] authors;
@@ -296,21 +290,19 @@ public class AfterLoginPage extends JFrame {
                 break;
         }
 
-        // Preload images dynamically based on array length
         ImageIcon[] cachedImages = new ImageIcon[images.length];
         for (int i = 0; i < images.length; i++) {
             ImageIcon raw = new ImageIcon(images[i]);
-            Image scaled = raw.getImage().getScaledInstance(200, 180, Image.SCALE_SMOOTH);
+            Image scaled = raw.getImage().getScaledInstance(200, 280, Image.SCALE_SMOOTH);
             cachedImages[i] = new ImageIcon(scaled);
         }
 
-        // Create clickable image blocks dynamically
         for (int i = 0; i < images.length; i++) {
             String t = titles[i], a = authors[i], p = prices[i], d = descriptions[i];
             String imgPath = images[i];
             JPanel block = new JPanel(new BorderLayout());
             block.setBackground(Color.WHITE);
-            block.setBounds(70 + (i * 250), 100, 200, 180);
+            block.setBounds(70 + (i * 250), 100, 200, 300);
             block.setBorder(new RoundedBorder(20, Color.GRAY, 2));
 
             JLabel imgLabel = new JLabel(cachedImages[i]);
@@ -336,7 +328,7 @@ public class AfterLoginPage extends JFrame {
 
         categoryPanel = new JPanel(null);
         categoryPanel.setBackground(new Color(233, 236, 239));
-        categoryPanel.setBounds(50, 420, 1100, 320);
+        categoryPanel.setBounds(50, 520, 1100, 320);
         categoryPanel.setBorder(new RoundedBorder(30, Color.GRAY, 2));
 
         JLabel title = new JLabel("RECENTLY ADDED", SwingConstants.CENTER);
@@ -350,7 +342,6 @@ public class AfterLoginPage extends JFrame {
         subtitle.setBounds(0, 45, 1100, 30);
         categoryPanel.add(subtitle);
 
-        // Arrays for recently added (using CBA data as example)
         String[] images = {
                 "c:\\Users\\ASUS\\Downloads\\1_20251207_204022_0000.png",
                 "c:\\Users\\ASUS\\Downloads\\2_20251207_204022_0001.png",
@@ -367,7 +358,6 @@ public class AfterLoginPage extends JFrame {
                 "Accounting & Finance guide..."
         };
 
-        // Preload images dynamically based on array length
         ImageIcon[] cachedImages = new ImageIcon[images.length];
         for (int i = 0; i < images.length; i++) {
             ImageIcon raw = new ImageIcon(images[i]);
@@ -375,7 +365,6 @@ public class AfterLoginPage extends JFrame {
             cachedImages[i] = new ImageIcon(scaled);
         }
 
-        // Create clickable image blocks dynamically
         for (int i = 0; i < images.length; i++) {
             String t = titles[i], a = authors[i], p = prices[i], d = descriptions[i];
             String imgPath = images[i];
@@ -421,7 +410,6 @@ public class AfterLoginPage extends JFrame {
         subtitle.setBounds(0, 45, 1100, 30);
         categoryPanel.add(subtitle);
 
-        // Arrays for new arrivals
         String[] images = {
                 "c:\\Users\\ASUS\\Documents\\ImageFile\\1_20251207_015751_0000.png",
                 "c:\\Users\\ASUS\\Documents\\ImageFile\\2_20251207_015751_0001.png",
@@ -439,7 +427,6 @@ public class AfterLoginPage extends JFrame {
                 "Data Structures Overview..."
         };
 
-        // Preload images dynamically based on array length
         ImageIcon[] cachedImages = new ImageIcon[images.length];
         for (int i = 0; i < images.length; i++) {
             ImageIcon raw = new ImageIcon(images[i]);
@@ -447,7 +434,6 @@ public class AfterLoginPage extends JFrame {
             cachedImages[i] = new ImageIcon(scaled);
         }
 
-        // Create clickable image blocks dynamically
         for (int i = 0; i < images.length; i++) {
             String t = titles[i], a = authors[i], p = prices[i], d = descriptions[i];
             String imgPath = images[i];
@@ -479,7 +465,7 @@ public class AfterLoginPage extends JFrame {
     popup.setSize(1100, 600);
     popup.setLocationRelativeTo(null);
     popup.setResizable(false);
-    popup.setUndecorated(true); // remove frame border
+    popup.setUndecorated(true);
     popup.setLayout(null);
 
     JPanel bg = new JPanel(null);
@@ -489,21 +475,18 @@ public class AfterLoginPage extends JFrame {
 
     popup.add(bg);
 
-    // ===== LEFT CONTAINER (gray background) =====
     JPanel leftPanel = new JPanel(null);
     leftPanel.setBackground(new Color(240, 240, 240));
     leftPanel.setBounds(40, 40, 400, 520);
     leftPanel.setBorder(BorderFactory.createLineBorder(new Color(180, 180, 180), 2));
     bg.add(leftPanel);
 
-    // Book Image
     ImageIcon raw = new ImageIcon(imagePath);
     Image scaled = raw.getImage().getScaledInstance(320, 380, Image.SCALE_SMOOTH);
     JLabel img = new JLabel(new ImageIcon(scaled));
     img.setBounds(40, 60, 320, 380);
     leftPanel.add(img);
 
-    // ===== CLOSE BUTTON (X) =====
     JLabel close = new JLabel("✕", SwingConstants.CENTER);
     close.setFont(new Font("Arial", Font.BOLD, 32));
     close.setForeground(Color.BLACK);
@@ -516,38 +499,32 @@ public class AfterLoginPage extends JFrame {
     });
     bg.add(close);
 
-    // ===== TITLE =====
     JLabel titleLabel = new JLabel(code);
     titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
     titleLabel.setBounds(470, 60, 600, 40);
     bg.add(titleLabel);
 
-    // ===== SUBTITLE small uppercase =====
     JLabel subtitle = new JLabel("A STRUCTURED PROGRAMMING APPROACH IN C 4ᵀᴴ ED");
     subtitle.setFont(new Font("Arial", Font.PLAIN, 20));
     subtitle.setBounds(470, 100, 700, 35);
     bg.add(subtitle);
 
-    // ===== AUTHOR =====
     JLabel auth = new JLabel("AUTHOR:  " + author.toUpperCase());
     auth.setFont(new Font("Arial", Font.BOLD, 16));
     auth.setBounds(470, 140, 700, 30);
     bg.add(auth);
 
-    // ===== PRICE (big red) =====
     JLabel priceLabel = new JLabel(price);
     priceLabel.setFont(new Font("Arial", Font.BOLD, 36));
     priceLabel.setForeground(new Color(139, 0, 0));
     priceLabel.setBounds(470, 180, 400, 50);
     bg.add(priceLabel);
 
-    // ===== ABOUT THIS ITEM =====
     JLabel about = new JLabel("ABOUT THIS ITEM");
     about.setFont(new Font("Arial", Font.BOLD, 18));
     about.setBounds(470, 230, 500, 30);
     bg.add(about);
 
-    // ===== DESCRIPTION (show first part only) =====
     String shortDesc = description.length() > 270 ? description.substring(0, 270) + "...SEE MORE" : description;
 
     JLabel descLabel = new JLabel("<html>" + shortDesc + "</html>");
@@ -555,7 +532,6 @@ public class AfterLoginPage extends JFrame {
     descLabel.setBounds(470, 260, 600, 120);
     bg.add(descLabel);
 
-    // ===== ADD TO CART BUTTON (white border) =====
     JButton addToCart = new JButton("ADD TO CART");
     addToCart.setBounds(470, 420, 220, 55);
     addToCart.setFont(new Font("Arial", Font.BOLD, 14));
@@ -572,7 +548,6 @@ public class AfterLoginPage extends JFrame {
 
     bg.add(addToCart);
 
-    // ===== PURCHASE BUTTON (Dark Blue) =====
     JButton purchase = new JButton("PURCHASE");
     purchase.setBounds(710, 420, 220, 55);
     purchase.setFont(new Font("Arial", Font.BOLD, 14));
@@ -584,7 +559,7 @@ public class AfterLoginPage extends JFrame {
     purchase.addActionListener(e -> {
         ArrayList<CartItem> single = new ArrayList<>();
         single.add(new CartItem(description, price, imagePath, description, "", code));
-        loadCheckout(single);   // direct checkout
+        loadCheckout(single);   
         popup.dispose();
     });
 

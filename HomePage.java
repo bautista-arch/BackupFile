@@ -35,14 +35,12 @@ public class HomePage extends JFrame {
         textbookPortalBtn.setBackground(Color.WHITE);
         leftPanel.add(textbookPortalBtn);
 
-
-        /* RIGHT PANEL (CIRCLES + UC LOGO + TEXT + GET STARTED BUTTON) */
         JPanel rightPanel = new JPanel();
         rightPanel.setBackground(Color.WHITE);
         rightPanel.setLayout(null);
 
         JLabel circleDesign = new JLabel(new ImageIcon("c:\\Users\\ASUS\\Documents\\CircleDesign.png"));
-        // ← Insert the circular design image
+
         circleDesign.setBounds(70, -10, 350, 250);
         rightPanel.add(circleDesign);
 
@@ -65,15 +63,13 @@ public class HomePage extends JFrame {
         getStartedBtn.setForeground(Color.WHITE);
         getStartedBtn.setFocusPainted(false);
 
-        // OPEN LOGIN PAGE WHEN CLICKED
         getStartedBtn.addActionListener(e -> {
-            new UcTextBook();  // ← opens your login page
+            new UcTextBook();
             dispose();
         });
 
         rightPanel.add(getStartedBtn);
 
-        // ADD BOTH PANELS
         add(leftPanel);
         add(rightPanel);
 
